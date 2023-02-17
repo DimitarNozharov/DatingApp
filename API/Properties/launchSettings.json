@@ -18,6 +18,7 @@
       }
     },
     "API": {
+      "hotReloadEnabled": false,
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "weatherforecast",

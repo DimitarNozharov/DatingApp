@@ -454,3 +454,9 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 
 appsettings.json
+
+
+#additional files - TO be checked
+/.vs/DatingApp/DesignTimeBuild
+/.vs/DatingApp/FileContentIndex
+/.vs/DatingApp/v17
