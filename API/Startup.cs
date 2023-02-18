@@ -1,8 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using API.Data;
+using API.Extensions;
+using API.Interfaces;
+using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace API
@@ -31,16 +37,13 @@ namespace API
         {
 
             services.AddControllers();
-            services.AddCors();
+            services.AddApplicationServices(_config);
+            services.AddIdentityServices(_config);
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
-            });
-
-            services.AddDbContext<DataContext>(options => {
-                options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
-            });
+            }); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,7 +66,9 @@ namespace API
                 .WithOrigins("http://localhost:4200")
                 .WithOrigins("https://localhost:4200"));
 
-            app.UseAuthorization();
+            //add middleware for authentication & Authorization - should be after UserCors() and before MapControllers()
+            app.UseAuthentication(); //do you have a valid token
+            app.UseAuthorization();  //what are you allow to do
 
             app.UseEndpoints(endpoints =>
             {
